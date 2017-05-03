@@ -7,7 +7,6 @@
 #######################################
 
 TwoWire KEYWORD1
-Wire KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
@@ -25,6 +24,15 @@ peek KEYWORD2
 flush KEYWORD2
 
 twi_readFrom_timeout KEYWORD2
+twi_writeTo_timeout KEYWORD2
+twi_readFrom_wait KEYWORD2
+twi_writeTo_wait KEYWORD2
+
+#######################################
+# Instances (KEYWORD2)
+#######################################
+
+Wire KEYWORD2
 
 #######################################
 # Constants (LITERAL1)

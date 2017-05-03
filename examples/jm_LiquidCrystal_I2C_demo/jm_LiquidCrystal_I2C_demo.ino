@@ -9,6 +9,10 @@
 
 //#include <Wire.h>
 #include <jm_Wire.h>
+extern uint16_t twi_readFrom_timeout;
+extern uint16_t twi_writeTo_timeout;
+extern bool twi_readFrom_wait;
+extern bool twi_writeTo_wait;
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -26,7 +30,6 @@ const uint8_t charBitmap[8][8] = {
    { 0x00, 0x00, 0x00, 0x00, 0x00, 0x1F, 0x00, 0x00 },
    { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1F, 0x00 },
    { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1F }
-
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -99,6 +102,9 @@ void setup()
 	Serial.println();
 
 	Wire.begin();
+	twi_readFrom_wait = false; // Suppress twi_readFrom() waiting loop
+	twi_writeTo_wait = false; // Suppress twi_writeTo() waiting loop
+
 
 	lcd.begin();
 	while (lcd._i2cio.yield_request()) jm_Scheduler::yield();

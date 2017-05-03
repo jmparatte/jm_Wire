@@ -96,8 +96,33 @@ pinMode(SCL, INPUT_PULLUP); //
 	// enable twi module, acks, and twi interrupt
 	TWCR = _BV(TWEN) | _BV(TWIE) | _BV(TWEA);
 
-	twi_readFrom_timeout = 0;
+twi_readFrom_timeout = 0;
+twi_writeTo_timeout = 0;
+
+twi_readFrom_wait = true;
+twi_writeTo_wait = true;
 }
+
+/*
+ * Function twi_disable
+ * Desc     disables twi pins
+ * Input    none
+ * Output   none
+ */
+void twi_disable(void)
+#if 0
+{
+  // disable twi module, acks, and twi interrupt
+  TWCR &= ~(_BV(TWEN) | _BV(TWIE) | _BV(TWEA));
+
+  // deactivate internal pullups for twi.
+  digitalWrite(SDA, 0);
+  digitalWrite(SCL, 0);
+}
+#else
+{
+}
+#endif
 
 /*
  * Function twi_slaveInit
@@ -110,6 +135,27 @@ void twi_setAddress(uint8_t address)
 	// set twi slave address (skip over TWGCE bit)
 	TWAR = address << 1;
 }
+
+/*
+ * Function twi_setClock
+ * Desc     sets twi bit rate
+ * Input    Clock Frequency
+ * Output   none
+ */
+void twi_setFrequency(uint32_t frequency)
+#if 0
+{
+  TWBR = ((F_CPU / frequency) - 16) / 2;
+
+  /* twi bit rate formula from atmega128 manual pg 204
+  SCL Frequency = CPU Clock Frequency / (16 + (2 * TWBR))
+  note: TWBR should be 10 or higher for master mode
+  It is 72 for a 16mhz Wiring board with 100kHz TWI */
+}
+#else
+{
+}
+#endif
 
 /*
  * Function twi_readFrom
@@ -170,6 +216,9 @@ if (twi_state != TWI_READY) return 0; // + 2015-08-14
 	else
 		// send start condition
 		TWCR = _BV(TWEN) | _BV(TWIE) | _BV(TWEA) | _BV(TWINT) | _BV(TWSTA);
+
+//if (!wait) return 0;
+if (!twi_readFrom_wait) return 0;
 
 	// wait for read operation to complete
 //	while(TWI_MRX == twi_state){
@@ -270,7 +319,8 @@ if (twi_state != TWI_READY) return 5; // + 2015-08-12
 		// send start condition
 		TWCR = _BV(TWINT) | _BV(TWEA) | _BV(TWEN) | _BV(TWIE) | _BV(TWSTA);	// enable INTs
 
-if (!wait) return 0;
+//if (!wait) return 0;
+if (!twi_writeTo_wait) return 0;
 
 	// wait for write operation to complete
 //	while(wait && (TWI_MTX == twi_state)){ // - 2015-08-12

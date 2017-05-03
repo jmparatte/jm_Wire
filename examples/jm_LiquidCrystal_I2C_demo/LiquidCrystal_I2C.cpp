@@ -297,12 +297,8 @@ wait(200);
 	_i2cio.write (data & ~_En);  // En LOW
 wait(200);
 #else
-#if 0
-	lcd_i2c_write(data);
-#else
 	_i2cio.write (data | _En);	// En HIGH
 	_i2cio.write (data & ~_En);  // En LOW
-#endif
 #endif
 }
 
@@ -315,11 +311,6 @@ void LiquidCrystal_I2C::wait(uint16_t us)
 #if 0
 	delayMicroseconds( us	 );
 #else
-#if 0
-	lcd_i2c_write(0xFF);
-	lcd_i2c_write((us + (20 - 1))/20);
-#else
 	_i2cio.wait(us);
-#endif
 #endif
 }
